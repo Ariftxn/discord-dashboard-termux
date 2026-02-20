@@ -1,86 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Dashboard</title>
-<style>
-body{background:#0f172a;color:white;font-family:Arial;text-align:center}
-.card{background:#1e293b;padding:20px;border-radius:15px;width:600px;margin:20px auto}
-input,textarea,select{width:95%;margin:5px;padding:8px;border-radius:8px;border:none}
-button{padding:10px 20px;border:none;border-radius:8px;background:#5865F2;color:white;cursor:pointer}
-</style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Ultimate Embed Sender</h2>
+<div class="container">
+  <h2>Send Announcement</h2>
 
-<div class="card">
-<select id="guilds"></select>
-<select id="channels"></select>
+  <form id="sendForm">
+    <input type="text" name="channelId" placeholder="Channel ID" required>
 
-<textarea id="message" placeholder="Message"></textarea>
+    <textarea name="content" placeholder="Message"></textarea>
 
-<input id="title" placeholder="Embed Title">
-<textarea id="desc" placeholder="Embed Description"></textarea>
-<input id="footer" placeholder="Embed Footer">
-<input id="author" placeholder="Embed Author">
-<input id="thumbnail" placeholder="Thumbnail URL">
-<input id="image" placeholder="Image URL">
-<input type="color" id="color">
-<br>
-<label>Auto Delete (seconds)</label>
-<input type="number" id="deleteAfter">
+    <input type="text" name="title" placeholder="Embed Title">
+    <textarea name="description" placeholder="Embed Description"></textarea>
+    <input type="text" name="footer" placeholder="Embed Footer">
 
-<button onclick="send()">Send</button>
+    <input type="color" name="color">
+
+    <input type="file" name="file">
+
+    <button type="submit">Send</button>
+  </form>
 </div>
 
 <script>
-async function loadGuilds(){
-  const g=await fetch("/api/guilds");
-  const guilds=await g.json();
-  const sel=document.getElementById("guilds");
-  guilds.forEach(x=>{
-    sel.innerHTML+=`<option value="${x.id}">${x.name}</option>`
-  });
-  loadChannels();
-}
+document.getElementById("sendForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
 
-async function loadChannels(){
-  const id=document.getElementById("guilds").value;
-  const c=await fetch("/api/channels/"+id);
-  const ch=await c.json();
-  const sel=document.getElementById("channels");
-  sel.innerHTML="";
-  ch.forEach(x=>{
-    sel.innerHTML+=`<option value="${x.id}">${x.name}</option>`
-  });
-}
-
-document.getElementById("guilds").addEventListener("change",loadChannels);
-
-async function send(){
-  await fetch("/api/send",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      channelId:channels.value,
-      message:message.value,
-      embed:{
-        title:title.value,
-        description:desc.value,
-        footer:footer.value,
-        author:author.value,
-        thumbnail:thumbnail.value,
-        image:image.value,
-        color:color.value
-      },
-      deleteAfter:deleteAfter.value
-    })
+  await fetch("/send", {
+    method: "POST",
+    body: formData
   });
 
-  alert("Sent!");
-}
-
-loadGuilds();
+  alert("Message sent!");
+  e.target.reset();
+});
 </script>
 
 </body>
