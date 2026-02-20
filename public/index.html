@@ -1,105 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Discord Dashboard</title>
-  <style>
-    body {
-      background: #0f172a;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-    }
-
-    select, textarea, input {
-      width: 300px;
-      margin: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-    }
-
-    button {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      background: #5865F2;
-      color: white;
-      cursor: pointer;
-    }
-
-    .card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 12px;
-      display: inline-block;
-      margin-top: 50px;
-    }
-  </style>
+<title>Ultimate Dashboard</title>
+<style>
+body{background:#0f172a;color:white;text-align:center;font-family:Arial}
+button{padding:15px 25px;border:none;border-radius:10px;background:#5865F2;color:white;font-size:18px;cursor:pointer}
+</style>
 </head>
 <body>
-
-<div class="card">
-  <h2>🚀 Discord Announcement Dashboard</h2>
-
-  <select id="guilds" onchange="loadChannels()"></select><br>
-  <select id="channels"></select><br>
-
-  <textarea id="message" placeholder="Tulis pesan..."></textarea><br>
-
-  <h3>Embed (Opsional)</h3>
-  <input id="embedTitle" placeholder="Embed Title"><br>
-  <textarea id="embedDesc" placeholder="Embed Description"></textarea><br>
-
-  <button onclick="send()">Kirim</button>
-</div>
-
-<script>
-async function loadGuilds(){
-  const res = await fetch("/api/guilds");
-  const guilds = await res.json();
-  const select = document.getElementById("guilds");
-  select.innerHTML = guilds.map(g =>
-    `<option value="${g.id}">${g.name}</option>`
-  ).join("");
-  loadChannels();
-}
-
-async function loadChannels(){
-  const guildId = document.getElementById("guilds").value;
-  const res = await fetch(`/api/channels/${guildId}`);
-  const channels = await res.json();
-  const select = document.getElementById("channels");
-  select.innerHTML = channels.map(c =>
-    `<option value="${c.id}">${c.name}</option>`
-  ).join("");
-}
-
-async function send(){
-  const channelId = document.getElementById("channels").value;
-  const message = document.getElementById("message").value;
-  const embedTitle = document.getElementById("embedTitle").value;
-  const embedDesc = document.getElementById("embedDesc").value;
-
-  const data = {
-    channelId,
-    message,
-    embed: embedTitle || embedDesc ? {
-      title: embedTitle,
-      description: embedDesc
-    } : null
-  };
-
-  await fetch("/api/send", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-
-  alert("Berhasil dikirim!");
-}
-
-loadGuilds();
-</script>
-
+<h1>Ultimate Discord Dashboard</h1>
+<a href="/login"><button>Login with Discord</button></a>
 </body>
 </html>
